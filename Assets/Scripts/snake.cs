@@ -17,7 +17,7 @@ public class snake : MonoBehaviour
         deathText.SetActive(false);
         xStart = transform.position.x;
         yPos = transform.position.y;    
-        xOffset = -Random.Range(1f, 1.5f) * Time.deltaTime;
+        xOffset = -Random.Range(5f, 7.5f) * Time.deltaTime;
         xLength = Random.Range(2.5f, 3.5f);
     }
 
@@ -27,7 +27,7 @@ public class snake : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float xPos = transform.position.x + xOffset;
         transform.position = new Vector3(xPos, yPos, 0);

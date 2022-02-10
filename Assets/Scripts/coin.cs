@@ -25,7 +25,7 @@ public class coin : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
        if(mario.activeSelf == false)
         {

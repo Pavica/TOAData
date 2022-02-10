@@ -16,7 +16,7 @@ public class mario : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //get input values
         float xInput = Input.GetAxis("Horizontal");
