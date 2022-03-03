@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class camera : MonoBehaviour
 {
-    public GameObject mario;
+    public GameObject sonic;
 
     void Start()
     {
-        mario = GameObject.Find("mario");
+        sonic = GameObject.Find("sonic");
     }
     void FixedUpdate()
     {
-        transform.position = new Vector3(0, mario.transform.position.y + 2, -8);
+        transform.position = new Vector3(0, sonic.transform.position.y + 2, -8);
     }
 }
