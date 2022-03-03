@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class coin : MonoBehaviour
 {
-    public GameObject mario;
+    public GameObject sonic;
     public GameObject score;
     public GameObject highScore;
 
@@ -14,7 +14,7 @@ public class coin : MonoBehaviour
     private int highScoreCount = 0;
     // Start is called before the first frame update
     void Awake(){
-        mario = GameObject.Find("mario");
+        sonic = GameObject.Find("sonic");
         score = GameObject.Find("score");
         highScore = GameObject.Find("highScore");
     }
@@ -27,7 +27,7 @@ public class coin : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-       if(mario.activeSelf == false)
+       if(sonic.activeSelf == false)
         {
             transform.position = new Vector3(0, 0, 0);
             score.GetComponent<TextMeshProUGUI>().text = "Score: 0";
@@ -37,7 +37,7 @@ public class coin : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == mario)
+        if (collision.gameObject == sonic)
         {
             scoreCount++;
             score.GetComponent <TextMeshProUGUI>().text = "Score: " + scoreCount.ToString();
