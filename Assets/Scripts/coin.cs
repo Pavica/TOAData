@@ -27,7 +27,7 @@ public class coin : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-       if(sonic.activeSelf == false)
+       if(sonic.GetComponent<sonic>().isDead)
         {
             transform.position = new Vector3(0, 0, 0);
             score.GetComponent<TextMeshProUGUI>().text = "Score: 0";
@@ -48,7 +48,7 @@ public class coin : MonoBehaviour
             }
             setCoinPosition();
         }
-        if(collision.gameObject.tag == "Platform")
+        if(collision.gameObject.tag == "Jumpable")
         {
             setCoinPosition();
         }
@@ -59,6 +59,5 @@ public class coin : MonoBehaviour
         float xPos = Random.Range(-8f, 8f);
         float yPos = Random.Range(-4f, 4f);
         transform.position = new Vector3(xPos, yPos, 0);
-
     }
 }
