@@ -8,6 +8,9 @@ public class sonic : MonoBehaviour
     //animation
     public Animator animator;
 
+    //Directions
+    float xInput;
+
     //changing directions
     public int lastDirection = 1;
 
@@ -20,6 +23,7 @@ public class sonic : MonoBehaviour
     //jumpability
     public Transform feet;
     public LayerMask groundLayers;
+    public LayerMask wallLayers;
 
     //Dash
     public static float dashDistance = 15f;
@@ -32,6 +36,16 @@ public class sonic : MonoBehaviour
     public bool isDead = false;
 
     Rigidbody2D rb;
+
+    //WallJumpy
+    public float wallJumpTime = 0.15f;
+    public float wallSlideSpeed = -3f;
+    public float wallDistance = 0.41f;
+    bool isWallSliding = false;
+    RaycastHit2D WallCheckHit;
+    float jumptime;
+    bool canWallJump = true;
+
 
     // Awake is called when the sonic is initialised. here we just add rb for later purpouse
     private void Awake()
@@ -49,7 +63,7 @@ public class sonic : MonoBehaviour
             return;
         }
 
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        if(Input.GetKeyDown(KeyCode.Space) && isGrounded() || isWallSliding && Input.GetKeyDown(KeyCode.Space))
         {
             GetComponent<Rigidbody2D>().AddForce(Vector2.up * velocity, ForceMode2D.Impulse);
             animator.SetBool("Jump", true);
@@ -98,6 +112,31 @@ public class sonic : MonoBehaviour
                 StartCoroutine(Dash(Vector2.up));
             }
         }
+
+        //Wall Jump
+
+            if (lastDirection == 1)
+            {
+                WallCheckHit = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, wallLayers);
+            }
+            else
+            {
+                WallCheckHit = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, wallLayers);
+            }
+
+            if (WallCheckHit && !isGrounded() && xInput != 0)
+            {
+                isWallSliding = true;
+                jumptime = Time.time + wallJumpTime;
+            }
+            else if (jumptime < Time.time)
+            {
+                isWallSliding = false;
+            }
+        if (isWallSliding)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, wallSlideSpeed, float.MaxValue));
+        }
     }
 
     private void FixedUpdate()
@@ -120,7 +159,7 @@ public class sonic : MonoBehaviour
 
         
             //get input values
-            float xInput = Input.GetAxis("Horizontal");
+            xInput = Input.GetAxis("Horizontal");
             //float yInput = Input.GetAxis("Vertical");
 
             animator.SetFloat("Speed", Mathf.Abs(xInput));
@@ -141,6 +180,8 @@ public class sonic : MonoBehaviour
             }
             transform.position = transform.position + new Vector3(xDist, 0, 0);
         }
+
+        
     }
 
 

@@ -3931,7 +3931,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.7647059, y: 1.5882353}
+    oldSize: {x: 1.5803752, y: 2.3600001}
     newSize: {x: 4.431052, y: 1.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -4060,7 +4060,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 742452050}
   lastDirection: 1
-  moveSpeed: 10
+  moveSpeed: 5
   velocity: 10
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
@@ -4068,11 +4068,17 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 8
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 64
   isDashing: 0
   dashCharge: 0
   gravityHelp: 0
   deathText: {fileID: 0}
   isDead: 0
+  wallJumpTime: 0.2
+  wallSlideSpeed: -3
+  wallDistance: 0.5
 --- !u!1 &775302759
 GameObject:
   m_ObjectHideFlags: 0
@@ -4832,7 +4838,7 @@ GameObject:
   - component: {fileID: 1731807496}
   - component: {fileID: 1731807500}
   - component: {fileID: 1731807499}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tilemap Walls
   m_TagString: Walls
   m_Icon: {fileID: 0}
