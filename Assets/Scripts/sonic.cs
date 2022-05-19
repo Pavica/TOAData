@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class sonic : MonoBehaviour
 {
@@ -38,13 +39,16 @@ public class sonic : MonoBehaviour
     Rigidbody2D rb;
 
     //WallJumpy
-    public float wallJumpTime = 0.15f;
+    public float wallJumpTime = -300f;
     public float wallSlideSpeed = -3f;
     public float wallDistance = 0.41f;
     bool isWallSliding = false;
     RaycastHit2D WallCheckHit;
     float jumptime;
     bool canWallJump = true;
+
+    //TitleScreenEscape
+    public string titleScreen;
 
 
     // Awake is called when the sonic is initialised. here we just add rb for later purpouse
@@ -58,6 +62,11 @@ public class sonic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(titleScreen);
+        }
+
         if (isDead)
         {
             return;
@@ -127,16 +136,15 @@ public class sonic : MonoBehaviour
             if (WallCheckHit && !isGrounded() && xInput != 0)
             {
                 isWallSliding = true;
-                jumptime = Time.time + wallJumpTime;
             }
-            else if (jumptime < Time.time)
+            else
             {
                 isWallSliding = false;
             }
-        if (isWallSliding)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, wallSlideSpeed, float.MaxValue));
-        }
+            if (isWallSliding)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, wallSlideSpeed, float.MaxValue));
+            }
     }
 
     private void FixedUpdate()
