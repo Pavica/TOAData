@@ -8,14 +8,23 @@ public class sonic : MonoBehaviour
     //animation
     public Animator animator;
 
+    //Particle
+    public ParticleSystem dash;
+    public ParticleSystem dust;
+
+    //Materials
+    public Material matLeft;
+    public Material matRight;
+
     //Directions
     float xInput;
+    float xDist;
 
     //changing directions
     public int lastDirection = 1;
 
     //movement
-    public float moveSpeed = 15.0f;
+    public static float moveSpeed = 10.0f;
     public float velocity = 10;
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
@@ -27,6 +36,7 @@ public class sonic : MonoBehaviour
 
     //Dash
     public static float dashDistance = 15f;
+    public static float velocityAfterDashMultiplier = 5;
     public bool isDashing;
     public bool dashCharge = false;
     public float gravityHelp;
@@ -38,13 +48,17 @@ public class sonic : MonoBehaviour
     Rigidbody2D rb;
 
     //WallJumpy
-    public float wallJumpTime = 0.15f;
+    public static float wallJumpVelocityBase = 0.75f;
     public float wallSlideSpeed = -3f;
-    public float wallDistance = 0.41f;
-    bool isWallSliding = false;
+    public float wallDistance = 0.5f;
+    public bool isWallSliding = false;
+    public bool wallJumpCharge = true;
+    
     RaycastHit2D WallCheckHit;
-    float jumptime;
-    bool canWallJump = true;
+    public float wallJumpVelocity = wallJumpVelocityBase;
+    public float wallJumpTime = 0.05f;
+    public float jumpTime;
+    
 
 
     // Awake is called when the sonic is initialised. here we just add rb for later purpouse
@@ -63,10 +77,25 @@ public class sonic : MonoBehaviour
             return;
         }
 
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded() || isWallSliding && Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
             GetComponent<Rigidbody2D>().AddForce(Vector2.up * velocity, ForceMode2D.Impulse);
             animator.SetBool("Jump", true);
+            dust.Play();
+         //maybe also check lastDirection to further make wallJumping on one wall impossible
+        }else if(isWallSliding && wallJumpCharge && Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, wallJumpVelocity);
+            GetComponent<Rigidbody2D>().AddForce(Vector2.up * velocity, ForceMode2D.Impulse);
+
+            if (wallJumpVelocity >= 0)
+            {
+                dust.Play();
+            }
+
+            wallJumpVelocity = wallJumpVelocity - 8f;
+            animator.SetBool("Jump", true);
+            wallJumpCharge = false;
         }
 
         if(isDashing == false && dashCharge == true)
@@ -114,7 +143,7 @@ public class sonic : MonoBehaviour
         }
 
         //Wall Jump
-
+        
             if (lastDirection == 1)
             {
                 WallCheckHit = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, wallLayers);
@@ -127,16 +156,24 @@ public class sonic : MonoBehaviour
             if (WallCheckHit && !isGrounded() && xInput != 0)
             {
                 isWallSliding = true;
-                jumptime = Time.time + wallJumpTime;
+                animator.SetBool("WallSliding", true);
+                wallJumpCharge = true;
+                jumpTime = Time.time + wallJumpTime;
             }
-            else if (jumptime < Time.time)
+            else if(jumpTime < Time.time)
             {
                 isWallSliding = false;
+                animator.SetBool("WallSliding", false);
             }
-        if (isWallSliding)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, wallSlideSpeed, float.MaxValue));
+    
+            if (isWallSliding)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, wallSlideSpeed, float.MaxValue));
         }
+            else
+            {
+            wallJumpVelocity = wallJumpVelocityBase;
+            }
     }
 
     private void FixedUpdate()
@@ -165,10 +202,12 @@ public class sonic : MonoBehaviour
             animator.SetFloat("Speed", Mathf.Abs(xInput));
 
             // compute new position of sonic
-            float xDist = xInput * moveSpeed * Time.deltaTime;
+            xDist = xInput * moveSpeed * Time.deltaTime;
             //float yDist = yInput * moveSpeed * Time.deltaTime;
 
-            if (Mathf.Abs(transform.position.x + xDist) > 8.22)
+
+            //before Mathf.Abs(transform.position.x + xDist) > 8.22 --> xDist =0 now in OnCollisonStay
+            if (isWallSliding)
             {
                 xDist = 0;
             }
@@ -177,11 +216,14 @@ public class sonic : MonoBehaviour
             {
                 transform.Rotate(0, 180, 0);
                 lastDirection *= -1;
+
+                if (isGrounded())
+                {
+                    dust.Play();
+                }
             }
             transform.position = transform.position + new Vector3(xDist, 0, 0);
-        }
-
-        
+        }    
     }
 
 
@@ -192,8 +234,8 @@ public class sonic : MonoBehaviour
         if (groundCheck != null)
         {
             dashCharge = true;
-            return true;
-            
+            wallJumpCharge = true;
+            return true; 
         }
         return false;
     }
@@ -203,6 +245,15 @@ public class sonic : MonoBehaviour
 
         isDashing = true;
         animator.SetBool("Dash", true);
+        if(lastDirection == 1) {
+            dash.GetComponent<ParticleSystemRenderer>().material = matRight;
+        }
+        else
+        {
+            dash.GetComponent<ParticleSystemRenderer>().material = matLeft;
+        }
+
+        dash.Play();
         dashCharge = false;
         rb.velocity = new Vector2(rb.velocity.x, 0f);
         GetComponent<Rigidbody2D>().AddForce(direction  * dashDistance, ForceMode2D.Impulse);
@@ -211,10 +262,12 @@ public class sonic : MonoBehaviour
 
         //Dash DURATION!!
         yield return new WaitForSeconds(0.15f);
-        rb.velocity = direction;
+        //adjust multiplier to adjust how much velocity is added after dash
+        rb.velocity = new Vector2(direction.x * velocityAfterDashMultiplier, direction.y* velocityAfterDashMultiplier);
         rb.gravityScale = gravityHelp;
         isDashing = false;
 
+        dash.Stop();
         animator.SetBool("Dash", false);
     }
     private void OnCollisionEnter2D(Collision2D col)
@@ -230,7 +283,7 @@ public class sonic : MonoBehaviour
             deathText.transform.position = new Vector3(deathText.transform.position.x, deathText.transform.position.y, 0);
             deathText.SetActive(true);
 
-            transform.position = new Vector3(0, -4f, 1);
+            transform.position = new Vector3(0, -3f, 1);
             GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
             GetComponent<Renderer>().enabled = false;
 
