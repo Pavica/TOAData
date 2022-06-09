@@ -87,13 +87,14 @@ public class sonic : MonoBehaviour
             return;
         }
 
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
             GetComponent<Rigidbody2D>().AddForce(Vector2.up * velocity, ForceMode2D.Impulse);
             animator.SetBool("Jump", true);
             dust.Play();
-         //maybe also check lastDirection to further make wallJumping on one wall impossible
-        }else if(isWallSliding && wallJumpCharge && Input.GetKeyDown(KeyCode.Space))
+            //maybe also check lastDirection to further make wallJumping on one wall impossible
+        }
+        else if (isWallSliding && wallJumpCharge && Input.GetKeyDown(KeyCode.Space))
         {
             rb.velocity = new Vector2(rb.velocity.x, wallJumpVelocity);
             GetComponent<Rigidbody2D>().AddForce(Vector2.up * velocity, ForceMode2D.Impulse);
@@ -108,7 +109,7 @@ public class sonic : MonoBehaviour
             wallJumpCharge = false;
         }
 
-        if(isDashing == false && dashCharge == true)
+        if (isDashing == false && dashCharge == true)
         {
             //Dash Up Right
             if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.J))
@@ -153,34 +154,37 @@ public class sonic : MonoBehaviour
         }
 
         //Wall Jump
-        
-            if (lastDirection == 1)
-            {
-                WallCheckHit = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, wallLayers);
-            }
-            else
-            {
-                WallCheckHit = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, wallLayers);
-            }
 
-            if (WallCheckHit && !isGrounded() && xInput != 0)
-            {
-                isWallSliding = true;
-                animator.SetBool("WallSliding", true);
-                wallJumpCharge = true;
-                jumpTime = Time.time + wallJumpTime;
-            }
-            else if(jumpTime < Time.time){
-                isWallSliding = false;
-                animator.SetBool("WallSliding", false);
-            }
-    
-            if (isWallSliding)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, wallSlideSpeed, float.MaxValue));
-            }else
-            {
+        if (lastDirection == 1)
+        {
+            WallCheckHit = Physics2D.Raycast(transform.position, new Vector2(wallDistance, 0), wallDistance, wallLayers);
+        }
+        else
+        {
+            WallCheckHit = Physics2D.Raycast(transform.position, new Vector2(-wallDistance, 0), wallDistance, wallLayers);
+        }
+
+        if (WallCheckHit && !isGrounded() && xInput != 0)
+        {
+            isWallSliding = true;
+            animator.SetBool("WallSliding", true);
+            wallJumpCharge = true;
+            jumpTime = Time.time + wallJumpTime;
+        }
+        else if (jumpTime < Time.time)
+        {
+            isWallSliding = false;
+            animator.SetBool("WallSliding", false);
+        }
+
+        if (isWallSliding)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, wallSlideSpeed, float.MaxValue));
+        }
+        else
+        {
             wallJumpVelocity = wallJumpVelocityBase;
+        }
     }
 
     private void FixedUpdate()
