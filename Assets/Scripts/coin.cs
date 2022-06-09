@@ -35,7 +35,7 @@ public class coin : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject == sonic)
         {
@@ -48,16 +48,29 @@ public class coin : MonoBehaviour
             }
             setCoinPosition();
         }
-        if(collision.gameObject.tag == "Jumpable")
+        else if(collision.gameObject.tag != "Enemy")
         {
-            setCoinPosition();
+            setCoinPosition();    
         }
-       
+        
     }
-
+   
     private void setCoinPosition(){
+        //make this not random and connect it to the tilemap somehow
         float xPos = Random.Range(-8f, 8f);
-        float yPos = Random.Range(-4f, 4f);
+
+        int eitherOr = Random.Range(0,2);
+        float yPos;
+
+        if (eitherOr == 0)
+        {
+            yPos = Random.Range(-4f, 4f);
+        }
+        else
+        {
+            yPos = Random.Range(8f, 14f);
+        }
+        
         transform.position = new Vector3(xPos, yPos, 0);
     }
 }

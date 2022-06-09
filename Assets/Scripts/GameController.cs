@@ -6,6 +6,18 @@ public class GameController : MonoBehaviour
 {
     public GameObject snake;
     private int counter = 0;
+
+    private Vector2[] snakePos =
+    {
+        new Vector2(4.5f,2f),
+        new Vector2(-4.5f, 2f),
+        new Vector2(4.5f,-1f),
+        new Vector2(-4.5f, -1f),
+        new Vector2(0f, 6.5f),
+        new Vector2(-4.5f, 12f),
+        new Vector2(4.5f, 12f)
+    };
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,7 +26,7 @@ public class GameController : MonoBehaviour
 
     void spawnSnakes()
     {
-        for(int i=0; i<5; i++)
+        for (int i = 0; i < snakePos.Length; i++)
         {
             Invoke("spawnSingleSnake", i);
         }
@@ -22,9 +34,8 @@ public class GameController : MonoBehaviour
 
     void spawnSingleSnake()
     {
-        float xPos = 3.5f * (counter % 2 == 0 ? 1 : -1);
-        float yPos = -3 + (counter % 3) * 3.0f;
-        Vector3 position = new Vector3(xPos, yPos, 0);
+
+        Vector3 position = new Vector3(snakePos[counter].x, snakePos[counter].y, 0);
         GameObject gameObject = Instantiate(snake, position, Quaternion.identity);
         counter++;
     }
@@ -32,6 +43,6 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

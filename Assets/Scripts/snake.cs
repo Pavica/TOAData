@@ -30,7 +30,7 @@ public class snake : MonoBehaviour
         float xPos = transform.position.x + xOffset * Time.deltaTime;
         transform.position = new Vector3(xPos, yPos, 0);
         if(xPos > xStart + xLength || xPos < xStart - xLength){
-            transform.Rotate(0, 0, 180);
+            transform.Rotate(0, 180, 0);
             xOffset *= -1;
         }
     }
