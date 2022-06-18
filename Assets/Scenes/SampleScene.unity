@@ -10475,6 +10475,7 @@ GameObject:
   - component: {fileID: 1071030072}
   - component: {fileID: 1071030071}
   - component: {fileID: 1071030070}
+  - component: {fileID: 1071030075}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Untagged
@@ -10544,6 +10545,7 @@ MonoBehaviour:
   sonic: {fileID: 0}
   score: {fileID: 0}
   highScore: {fileID: 0}
+  sceneName: TilemapScene
 --- !u!212 &1071030073
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10609,6 +10611,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1071030075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071030069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb94648839416c345b49362200751fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sonic: {fileID: 0}
+  score: {fileID: 0}
+  highScore: {fileID: 0}
+  sceneName: TilemapScene
 --- !u!1 &1089584716
 GameObject:
   m_ObjectHideFlags: 0

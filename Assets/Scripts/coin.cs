@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class coin : MonoBehaviour
 {
     public GameObject sonic;
     public GameObject score;
     public GameObject highScore;
+    public string sceneName;
 
     private int scoreCount = 0;
     private int highScoreCount = 0;
@@ -27,6 +29,11 @@ public class coin : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(scoreCount == 3)
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+
        if(sonic.GetComponent<sonic>().isDead)
         {
             transform.position = new Vector3(0, 0, 0);
