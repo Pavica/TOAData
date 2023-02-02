@@ -37,7 +37,7 @@ public class sonic : MonoBehaviour
 
     //Dash
     public static float dashDistance = 15f;
-    public static float velocityAfterDashMultiplier = 5;
+    public static float velocityAfterDashMultiplier = 2.5f;
     public bool isDashing;
     public bool dashCharge = false;
     public float gravityHelp;
@@ -72,6 +72,12 @@ public class sonic : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         gravityHelp = rb.gravityScale;
         deathText = GameObject.Find("deathText");
+        Invoke("setInactive", 2);
+    }
+
+    private void setInactive()
+    {
+        deathText.SetActive(false);
     }
 
     // Update is called once per frame
@@ -104,7 +110,7 @@ public class sonic : MonoBehaviour
                 dust.Play();
             }
 
-            wallJumpVelocity = wallJumpVelocity - 8f;
+            wallJumpVelocity -= 8f;
             animator.SetBool("Jump", true);
             wallJumpCharge = false;
         }
@@ -112,42 +118,42 @@ public class sonic : MonoBehaviour
         if (isDashing == false && dashCharge == true)
         {
             //Dash Up Right
-            if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.J))
+            if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.up + Vector2.right));
             }
             //Dash Up Left
-            else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.J))
+            else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.up + Vector2.left));
             }
             //Dash Down Right
-            else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.J))
+            else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.down + Vector2.right));
             }
             //Dash Down Left
-            else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.J))
+            else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.down + Vector2.left));
             }
             //Dash left
-            else if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.J))
+            else if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.left));
             }
             //Dash right
-            else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.J))
+            else if (Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.right));
             }
             //Dash up
-            else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.J))
+            else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.down));
             }
             //Dash down
-            else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.J))
+            else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.H))
             {
                 StartCoroutine(Dash(Vector2.up));
             }
@@ -217,7 +223,10 @@ public class sonic : MonoBehaviour
             //float yDist = yInput * moveSpeed * Time.deltaTime;
 
 
-            //before Mathf.Abs(transform.position.x + xDist) > 8.22 --> xDist =0 now in OnCollisonStay
+            if(Mathf.Abs(transform.position.x + xDist) > 8.22)
+            {
+                xDist = 0;
+            } 
             if (isWallSliding)
             {
                 xDist = 0;
@@ -292,6 +301,7 @@ public class sonic : MonoBehaviour
         {
             isDead = true;
             deathText.transform.position = new Vector3(deathText.transform.position.x, deathText.transform.position.y, 0);
+            deathText.transform.GetComponent<TMPro.TextMeshProUGUI>().text = "you died!";
             deathText.SetActive(true);
 
             transform.position = new Vector3(0, -3f, 1);
@@ -305,7 +315,7 @@ public class sonic : MonoBehaviour
     private void nextLife()
     {
         isDead = false;
-        deathText.SetActive(false);
+        setInactive();
 
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         GetComponent<Renderer>().enabled = true;

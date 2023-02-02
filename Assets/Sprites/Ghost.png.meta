@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ghost.png.meta
-guid: 435c913402cce54468c809b6729391b1
-========
-guid: b804dad8ce4952241b02532a2f83fff1
->>>>>>>> 0731f03c8aae809edd3b8ca1c42a0077764eec55:Assets/Sprites/Shogi_Dash_Material1.png.png.meta
+guid: 3344c638e8b84c149abc19fff584f807
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
